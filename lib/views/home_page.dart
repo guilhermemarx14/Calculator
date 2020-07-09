@@ -1,3 +1,4 @@
+import 'package:calculator/controller/equation_controller.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,11 +13,18 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var _screenWidth;
   var _screenHeight;
+  var controller;
+  @override
+  void initState() {
+    controller = EquationController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
+    var value = controller.evaluate('10 + -2 ^ 4 ÷ 16');
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text(widget.title)),
@@ -32,7 +40,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      '10×2',
+                      '10 + -2 ^ 4 ÷ 16',
                       style: TextStyle(color: Colors.black, fontSize: 35.0),
                     ),
                   ],
@@ -44,7 +52,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      '20',
+                      '$value',
                       style: TextStyle(color: Colors.black, fontSize: 50.0),
                     ),
                   ],
@@ -85,13 +93,13 @@ class Row1 extends StatelessWidget {
     return Row(
       children: [
         Container(
-          color: Colors.blue,
+          color: Colors.deepOrangeAccent,
           margin: EdgeInsets.all(1.0),
           width: _screenWidth / 4 - 2,
           height: _screenHeight / (2 * 5) - 2,
           child: FlatButton(
             child: Text(
-              '⌫',
+              'C',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 30.0,
@@ -133,13 +141,13 @@ class Row1 extends StatelessWidget {
           ),
         ),
         Container(
-          color: Colors.deepOrangeAccent,
+          color: Colors.blue,
           margin: EdgeInsets.all(1.0),
           width: _screenWidth / 4 - 2,
           height: _screenHeight / (2 * 5) - 2,
           child: FlatButton(
             child: Text(
-              'CE',
+              '⌫',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 30.0,
@@ -218,13 +226,13 @@ class Row2 extends StatelessWidget {
           ),
         ),
         Container(
-          color: Colors.deepOrangeAccent,
+          color: Colors.blue,
           margin: EdgeInsets.all(1.0),
           width: _screenWidth / 4 - 2,
           height: _screenHeight / (2 * 5) - 2,
           child: FlatButton(
             child: Text(
-              'C',
+              '^',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 30.0,
