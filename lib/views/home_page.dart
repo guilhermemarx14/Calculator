@@ -1,5 +1,6 @@
 import 'package:calculator/controller/equation_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -24,7 +25,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
-    var value = controller.evaluate('10 + -2 ^ 4 ÷ 16');
+    //controller.equation = '10 + -2 ^ 4 ÷ 16';
+    controller.evaluate();
+
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text(widget.title)),
@@ -39,9 +42,15 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      '10 + -2 ^ 4 ÷ 16',
-                      style: TextStyle(color: Colors.black, fontSize: 35.0),
+                    Observer(
+                      builder: (_) => Text(
+                        //todo: textScroll
+                        controller.equation,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 35.0,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -51,9 +60,11 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      '$value',
-                      style: TextStyle(color: Colors.black, fontSize: 50.0),
+                    Observer(
+                      builder: (_) => Text(
+                        controller.result,
+                        style: TextStyle(color: Colors.black, fontSize: 50.0),
+                      ),
                     ),
                   ],
                 ),
@@ -63,11 +74,26 @@ class _HomePageState extends State<HomePage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Row1(screenWidth: _screenWidth, screenHeight: _screenHeight),
-              Row2(screenWidth: _screenWidth, screenHeight: _screenHeight),
-              Row3(screenWidth: _screenWidth, screenHeight: _screenHeight),
-              Row4(screenWidth: _screenWidth, screenHeight: _screenHeight),
-              Row5(screenWidth: _screenWidth, screenHeight: _screenHeight),
+              Row1(
+                  screenWidth: _screenWidth,
+                  screenHeight: _screenHeight,
+                  controller: controller),
+              Row2(
+                  screenWidth: _screenWidth,
+                  screenHeight: _screenHeight,
+                  controller: controller),
+              Row3(
+                  screenWidth: _screenWidth,
+                  screenHeight: _screenHeight,
+                  controller: controller),
+              Row4(
+                  screenWidth: _screenWidth,
+                  screenHeight: _screenHeight,
+                  controller: controller),
+              Row5(
+                  screenWidth: _screenWidth,
+                  screenHeight: _screenHeight,
+                  controller: controller),
             ],
           ),
         ],
@@ -77,17 +103,18 @@ class _HomePageState extends State<HomePage> {
 }
 
 class Row1 extends StatelessWidget {
-  Row1({
-    Key key,
-    @required screenWidth,
-    @required screenHeight,
-  })  : _screenWidth = screenWidth,
+  Row1(
+      {Key key,
+      @required screenWidth,
+      @required screenHeight,
+      @required this.controller})
+      : _screenWidth = screenWidth,
         _screenHeight = screenHeight,
         super(key: key);
 
   var _screenWidth;
   var _screenHeight;
-
+  var controller;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -105,7 +132,9 @@ class Row1 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.clear();
+            },
           ),
         ),
         Container(
@@ -121,7 +150,9 @@ class Row1 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('÷');
+            },
           ),
         ),
         Container(
@@ -137,7 +168,9 @@ class Row1 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('×');
+            },
           ),
         ),
         Container(
@@ -153,7 +186,9 @@ class Row1 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.backspace();
+            },
           ),
         ),
       ],
@@ -162,17 +197,18 @@ class Row1 extends StatelessWidget {
 }
 
 class Row2 extends StatelessWidget {
-  Row2({
-    Key key,
-    @required screenWidth,
-    @required screenHeight,
-  })  : _screenWidth = screenWidth,
+  Row2(
+      {Key key,
+      @required screenWidth,
+      @required screenHeight,
+      @required this.controller})
+      : _screenWidth = screenWidth,
         _screenHeight = screenHeight,
         super(key: key);
 
   var _screenWidth;
   var _screenHeight;
-
+  var controller;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -190,7 +226,9 @@ class Row2 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('7');
+            },
           ),
         ),
         Container(
@@ -206,7 +244,9 @@ class Row2 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('8');
+            },
           ),
         ),
         Container(
@@ -222,7 +262,9 @@ class Row2 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('9');
+            },
           ),
         ),
         Container(
@@ -238,7 +280,9 @@ class Row2 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('^');
+            },
           ),
         ),
       ],
@@ -247,17 +291,18 @@ class Row2 extends StatelessWidget {
 }
 
 class Row3 extends StatelessWidget {
-  Row3({
-    Key key,
-    @required screenWidth,
-    @required screenHeight,
-  })  : _screenWidth = screenWidth,
+  Row3(
+      {Key key,
+      @required screenWidth,
+      @required screenHeight,
+      @required this.controller})
+      : _screenWidth = screenWidth,
         _screenHeight = screenHeight,
         super(key: key);
 
   var _screenWidth;
   var _screenHeight;
-
+  var controller;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -275,7 +320,9 @@ class Row3 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('4');
+            },
           ),
         ),
         Container(
@@ -291,7 +338,9 @@ class Row3 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('5');
+            },
           ),
         ),
         Container(
@@ -307,7 +356,9 @@ class Row3 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('6');
+            },
           ),
         ),
         Container(
@@ -323,7 +374,9 @@ class Row3 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('-');
+            },
           ),
         ),
       ],
@@ -332,17 +385,18 @@ class Row3 extends StatelessWidget {
 }
 
 class Row4 extends StatelessWidget {
-  Row4({
-    Key key,
-    @required screenWidth,
-    @required screenHeight,
-  })  : _screenWidth = screenWidth,
+  Row4(
+      {Key key,
+      @required screenWidth,
+      @required screenHeight,
+      @required this.controller})
+      : _screenWidth = screenWidth,
         _screenHeight = screenHeight,
         super(key: key);
 
   var _screenWidth;
   var _screenHeight;
-
+  var controller;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -360,7 +414,9 @@ class Row4 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('1');
+            },
           ),
         ),
         Container(
@@ -376,7 +432,9 @@ class Row4 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('2');
+            },
           ),
         ),
         Container(
@@ -392,7 +450,9 @@ class Row4 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('3');
+            },
           ),
         ),
         Container(
@@ -408,7 +468,9 @@ class Row4 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('+');
+            },
           ),
         ),
       ],
@@ -417,17 +479,18 @@ class Row4 extends StatelessWidget {
 }
 
 class Row5 extends StatelessWidget {
-  Row5({
-    Key key,
-    @required screenWidth,
-    @required screenHeight,
-  })  : _screenWidth = screenWidth,
+  Row5(
+      {Key key,
+      @required screenWidth,
+      @required screenHeight,
+      @required this.controller})
+      : _screenWidth = screenWidth,
         _screenHeight = screenHeight,
         super(key: key);
 
   var _screenWidth;
   var _screenHeight;
-
+  var controller;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -445,7 +508,9 @@ class Row5 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('.');
+            },
           ),
         ),
         Container(
@@ -461,7 +526,9 @@ class Row5 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('0');
+            },
           ),
         ),
         Container(
@@ -477,7 +544,9 @@ class Row5 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.addElement('00');
+            },
           ),
         ),
         Container(
@@ -493,7 +562,9 @@ class Row5 extends StatelessWidget {
                 fontSize: 30.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              controller.equals();
+            },
           ),
         ),
       ],

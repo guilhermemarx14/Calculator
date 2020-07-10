@@ -1,75 +1,136 @@
 import 'dart:math';
 
 import 'package:mobx/mobx.dart';
+part 'equation_controller.g.dart';
 
-class EquationController {
+class EquationController = _EquationController with _$EquationController;
+
+abstract class _EquationController with Store {
   @observable
-  String equation;
+  String equation = '';
 
-  EquationController() {
+  @observable
+  String result = '0';
+
+  @action
+  clear() {
+    equation = '';
+    result = '0';
+  }
+
+  @action
+  equals() {
+    evaluate();
     equation = '';
   }
 
   @action
-  double evaluate(String equationTeste) {
-    var split = equationTeste.split(' ');
+  backspace() {
+    if (equation.isNotEmpty)
+      equation = equation.substring(0, equation.length - 1);
+    evaluate();
+  }
 
+//'10 + -2 ^ 4 ÷ 16'
+  @action
+  addElement(String element) {
     var operations = ['^', '×', '÷', '+', '-'];
 
-    var numbers = [];
-    var operationBetween = [];
-    split.forEach((element) {
-      if (!operations.contains(element))
-        numbers.add(double.parse(element));
+    if (equation.isEmpty) {
+      equation = element;
+      evaluate();
+      return;
+    }
+
+    if (operations.contains(element)) {
+      equation = equation + ' ' + element;
+    } else {
+      if (operations.contains(equation[equation.length - 1]))
+        equation = equation + ' ' + element;
       else
-        operationBetween.add(element);
-    });
+        equation = equation + element;
+    }
 
-    //evaluate exp
-    for (int i = 0; i < operationBetween.length; i++)
-      if (operationBetween[i] == '^') {
-        numbers[i] = pow(numbers[i], numbers[i + 1]);
-        numbers.removeAt(i + 1);
-        operationBetween.removeAt(i);
-        i--;
+    evaluate();
+  }
+
+  @action
+  evaluate() {
+    //todo: evaluate double operation for negative numbers
+    if (equation.isEmpty) {
+      result = '0';
+      return;
+    }
+
+    try {
+      if (equation.endsWith(' ')) {
+        equation = equation.substring(0, equation.length - 1);
+        evaluate();
+        return;
       }
+      var split = equation.split(' ');
 
-    //evaluate mult
-    for (int i = 0; i < operationBetween.length; i++)
-      if (operationBetween[i] == '×') {
-        numbers[i] = numbers[i] * numbers[i + 1];
-        numbers.removeAt(i + 1);
-        operationBetween.removeAt(i);
-        i--;
+      var operations = ['^', '×', '÷', '+', '-'];
+
+      var numbers = [];
+      var operationBetween = [];
+
+      split.forEach((element) {
+        if (!operations.contains(element))
+          numbers.add(double.parse(element));
+        else
+          operationBetween.add(element);
+      });
+      if (operationBetween.length == numbers.length) {
+        return;
       }
+      //evaluate exp
+      for (int i = 0; i < operationBetween.length; i++)
+        if (operationBetween[i] == '^') {
+          numbers[i] = pow(numbers[i], numbers[i + 1]);
+          numbers.removeAt(i + 1);
+          operationBetween.removeAt(i);
+          i--;
+        }
 
-    //evaluate div
-    for (int i = 0; i < operationBetween.length; i++)
-      if (operationBetween[i] == '÷') {
-        numbers[i] = numbers[i] / numbers[i + 1];
-        numbers.removeAt(i + 1);
-        operationBetween.removeAt(i);
-        i--;
-      }
+      //evaluate mult
+      for (int i = 0; i < operationBetween.length; i++)
+        if (operationBetween[i] == '×') {
+          numbers[i] = numbers[i] * numbers[i + 1];
+          numbers.removeAt(i + 1);
+          operationBetween.removeAt(i);
+          i--;
+        }
 
-    //evaluate add
-    for (int i = 0; i < operationBetween.length; i++)
-      if (operationBetween[i] == '+') {
-        numbers[i] = numbers[i] + numbers[i + 1];
-        numbers.removeAt(i + 1);
-        operationBetween.removeAt(i);
-        i--;
-      }
+      //evaluate div
+      for (int i = 0; i < operationBetween.length; i++)
+        if (operationBetween[i] == '÷') {
+          numbers[i] = numbers[i] / numbers[i + 1];
+          numbers.removeAt(i + 1);
+          operationBetween.removeAt(i);
+          i--;
+        }
 
-    //evaluate sub
-    for (int i = 0; i < operationBetween.length; i++)
-      if (operationBetween[i] == '-') {
-        numbers[i] = numbers[i] - numbers[i + 1];
-        numbers.removeAt(i + 1);
-        operationBetween.removeAt(i);
-        i--;
-      }
+      //evaluate add
+      for (int i = 0; i < operationBetween.length; i++)
+        if (operationBetween[i] == '+') {
+          numbers[i] = numbers[i] + numbers[i + 1];
+          numbers.removeAt(i + 1);
+          operationBetween.removeAt(i);
+          i--;
+        }
 
-    return numbers[0];
+      //evaluate sub
+      for (int i = 0; i < operationBetween.length; i++)
+        if (operationBetween[i] == '-') {
+          numbers[i] = numbers[i] - numbers[i + 1];
+          numbers.removeAt(i + 1);
+          operationBetween.removeAt(i);
+          i--;
+        }
+      result = '${numbers[0]}';
+    } catch (Exception) {
+      result = 'NaN';
+    }
   }
 }
