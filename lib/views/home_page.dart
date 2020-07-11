@@ -44,7 +44,8 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.fromLTRB(8, 16, 8, 24),
                 child: Align(
                   alignment: Alignment.bottomRight,
-                  child: SingleChildScrollView(//todo: auto scroll
+                  child: SingleChildScrollView(
+                    //todo: auto scroll
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,

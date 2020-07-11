@@ -141,7 +141,7 @@ abstract class _EquationController with Store {
         }
       result = '${numbers[0]}';
     } catch (Exception) {
-      result = 'NaN';
+      result = 'Syntax Error';
     }
   }
 }
