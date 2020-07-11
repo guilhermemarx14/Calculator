@@ -1,3 +1,3 @@
 # Calculator
 
-Simple Calculator cross-platform using Flutter and MobX.
+Simple cross-platform calculator using Flutter and MobX.

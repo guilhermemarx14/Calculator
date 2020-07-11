@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:calculator/controller/equation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -15,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   var _screenWidth;
   var _screenHeight;
   var controller;
+  var scrollController;
   @override
   void initState() {
     controller = EquationController();
@@ -39,34 +42,47 @@ class _HomePageState extends State<HomePage> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 16, 8, 24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Observer(
-                      builder: (_) => Text(
-                        //todo: textScroll
-                        controller.equation,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 35.0,
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: SingleChildScrollView(//todo: auto scroll
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Observer(
+                          builder: (_) => Text(
+                            controller.equation,
+                            maxLines: 3,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 35.0,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 40, 8, 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Observer(
-                      builder: (_) => Text(
-                        controller.result,
-                        style: TextStyle(color: Colors.black, fontSize: 50.0),
-                      ),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Observer(
+                          builder: (_) => Text(
+                            controller.result,
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 50.0),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ],

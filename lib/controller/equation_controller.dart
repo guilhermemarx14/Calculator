@@ -28,6 +28,10 @@ abstract class _EquationController with Store {
   backspace() {
     if (equation.isNotEmpty)
       equation = equation.substring(0, equation.length - 1);
+    if (equation.endsWith(' ')) {
+      backspace();
+      return;
+    }
     evaluate();
   }
 
@@ -36,8 +40,11 @@ abstract class _EquationController with Store {
   addElement(String element) {
     var operations = ['^', '×', '÷', '+', '-'];
 
-    if (equation.isEmpty) {
+    var spacelessEquation = equation.replaceAll(' ', '');
+
+    if (spacelessEquation.isEmpty) {
       equation = element;
+      while (equation.contains('  ')) equation = equation.replaceAll('  ', ' ');
       evaluate();
       return;
     }
@@ -45,32 +52,32 @@ abstract class _EquationController with Store {
     if (operations.contains(element)) {
       equation = equation + ' ' + element;
     } else {
-      if (operations.contains(equation[equation.length - 1]))
-        equation = equation + ' ' + element;
-      else
+      if (operations
+              .contains(spacelessEquation[spacelessEquation.length - 1]) &&
+          operations.contains(spacelessEquation[spacelessEquation.length - 2]))
         equation = equation + element;
+      else if (operations
+          .contains(spacelessEquation[spacelessEquation.length - 1]))
+        equation = equation + ' ' + element;
+      else {
+        equation = equation + element;
+      }
     }
-
+    while (equation.contains('  ')) equation = equation.replaceAll('  ', ' ');
     evaluate();
   }
 
   @action
   evaluate() {
-    //todo: evaluate double operation for negative numbers
     if (equation.isEmpty) {
       result = '0';
       return;
     }
 
     try {
-      if (equation.endsWith(' ')) {
-        equation = equation.substring(0, equation.length - 1);
-        evaluate();
-        return;
-      }
-      var split = equation.split(' ');
-
       var operations = ['^', '×', '÷', '+', '-'];
+
+      var split = equation.split(' ');
 
       var numbers = [];
       var operationBetween = [];
@@ -84,6 +91,10 @@ abstract class _EquationController with Store {
       if (operationBetween.length == numbers.length) {
         return;
       }
+      for (var operation in operations)
+        for (var secondOperation in operations)
+          if (equation.endsWith(operation + ' ' + secondOperation)) return;
+
       //evaluate exp
       for (int i = 0; i < operationBetween.length; i++)
         if (operationBetween[i] == '^') {
